@@ -213,6 +213,14 @@ install_unix() {
         exit 1
     fi
     
+    # Remove macOS quarantine attribute if on macOS
+    if [[ "$os" == "darwin" ]]; then
+        print_status "Removing macOS quarantine attribute..."
+        if ! sudo xattr -d com.apple.quarantine "$install_dir/$INSTALL_NAME" 2>/dev/null; then
+            print_status "Quarantine attribute not present or could not be removed (this is okay)"
+        fi
+    fi
+    
     # Make binary executable
     chmod +x "$install_dir/$INSTALL_NAME"
     
